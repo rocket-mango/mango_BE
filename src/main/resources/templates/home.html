@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>mango</title>
+</head>
+<body>
+    안녕하세요! 망하지망고 홈페이지 입니다!
+    <br>
+    <a href="/oauth2/authorization/naver">네이버로그인</a>
+    <br>
+    <a href="/loginform">일반로그인</a>
+
+    <div id="weather">
+        현재 기온은 [[${temperature}]] 입니다.
+    </div>
+
+    <a href="/disease/home">망고 검사하기</a>
+    <a href="/disease/my-mango-list">망고 리스트 보기</a>
+</body>
+</html>

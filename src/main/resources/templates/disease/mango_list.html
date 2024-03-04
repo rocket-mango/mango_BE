@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>마이망고리스트</title>
+  <style>
+        table{
+            border-collapse: collapse;
+            width:100%;
+        }
+        th,td{
+            border:1px solid black;
+            padding: 8px;
+            text-align:center;
+        }
+    </style>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<div id="myMangoList">
+  <h1 style="text-align:center;"><span th:text="${nickname}"/>님의 마이망고리스트입니다</h1>
+
+  <table>
+    <!-- th:each 반복문에서 각 row에 자동적으로 id 값을 할당하는 방법은 다음과 같다.
+    rowStat이라는 생략 가능한 변수를 작성해놓으면 index 속성을 사용해
+    th:id에 리터럴로 값을 넣어 사용할 수 있다. -->
+    <tr th:each="mango, rowStat :${mangoList}" th:id="'row_'+${rowStat.index}">
+      <td th:text="${rowStat.index}+1"/>
+      <td>
+        <img th:src="@{${mango.img_url}}" width="50" height="50">
+      </td>
+      <td th:text="${mango.disease}"/>
+      <td th:text="${mango.location}"/>
+      <td>
+        <button th:onclick="deleteMango([[${mango.mid}]],[[${rowStat.index}]])">삭제하기</button>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- thymeleaf를 사용한 변수를 script에서 사용할 때 이렇게 script 태그에
+ th:inline=javascript 속성을 추가하면
+ 스크립트에서 java의 객체를 속성 그대로 사용할 수 있다는 장점이 있다.-->
+<script th:inline="javascript">
+        function deleteMango(mid, index){
+
+            //****window 함수인 confirm 함수를 사용하면 다음과 같이 alarm도 가능하고, boolean 값을 얻어 사용할 수도 있다.
+            var delete_ok=confirm("정말로 삭제하시겠습니까?");
+            console.log(mid);
+
+            //****삭제 버튼을 누르면 CSR을 사용해서 DELETE를 수행 후 HTML 코드를 수정한다.
+            if(delete_ok){
+                $.ajax({
+                    url: "/api/disease/lists/delete/"+mid,
+                    type : "GET",
+                    success: function(data){
+                        var row=document.getElementById("row_"+index);
+                        if(row){
+                            row.remove();
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        console.error("오류 발생: "+status+", "+error);
+                        window.alert("삭제 시 오류가 발생했습니다.");
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
